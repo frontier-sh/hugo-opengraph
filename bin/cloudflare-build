@@ -1,12 +1,8 @@
 #!/bin/bash
 
-# Build the Hugo site
-echo "Building Hugo site with minification..."
-hugo --gc --minify
-
 # Install Node.js dependencies for OpenGraph image generator
 echo "Setting up OpenGraph image generator..."
-cd "$(dirname "$0")/../scripts/og-generator"
+cd "scripts/og-generator"
 
 # Install dependencies if needed
 if [ ! -d "node_modules" ] || [ ! -d "node_modules/canvas" ]; then
@@ -21,6 +17,10 @@ echo "Generating OpenGraph images..."
 node generate.js
 
 # Return to the root directory
-cd "$(dirname "$0")/.."
+cd ../../
+
+# Build the Hugo site
+echo "Building Hugo site with minification..."
+hugo --gc --minify -b https://frontier.sh
 
 echo "Build completed successfully!"
