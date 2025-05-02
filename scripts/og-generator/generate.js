@@ -7,7 +7,9 @@ const glob = require("glob");
 const CONTENT_DIR = path.resolve(__dirname, "../../content");
 const OUTPUT_DIR = path.resolve(__dirname, "../../public/og-images");
 const PUBLIC_IMAGES_DIR = path.resolve(__dirname, "../../public/images");
-const FONT_PATH = path.resolve(__dirname, "../../themes/terminal/static/fonts/FiraCode-Regular.woff");
+
+// Direct paths to your local TTF files
+const FONT_REGULAR_PATH = path.resolve(__dirname, "./FiraCode-Regular.ttf");
 
 // Image configurations
 const WIDTH = 1200;
@@ -17,16 +19,24 @@ const TEXT_COLOR = "#F8F8F2";
 const ACCENT_COLOR = "#78E2A0"; // Match the site accent color (green)
 const CURSOR_COLOR = "#78E2A0"; // Match site cursor color
 
-// Register the custom font
+// Register the custom fonts
 try {
-	// First copy the font to a temporary location with a ttf extension
-	const tmpFontPath = path.resolve(__dirname, "FiraCode-Regular.ttf");
-	fs.copyFileSync(FONT_PATH, tmpFontPath);
-	registerFont(tmpFontPath, { family: "Fira Code" });
-	console.log("Font registered successfully");
+	// Verify font files exist
+	if (!fs.existsSync(FONT_REGULAR_PATH)) {
+		throw new Error(`Regular font file not found at: ${FONT_REGULAR_PATH}`);
+	}
+
+	// Register the fonts with node-canvas
+	console.log(`Registering Regular font from: ${FONT_REGULAR_PATH}`);
+	registerFont(FONT_REGULAR_PATH, {
+		family: "FiraCode",
+		weight: "normal",
+	});
+
+	console.log("Font files registered successfully");
 } catch (error) {
-	console.error("Error registering font:", error);
-	// Fall back to a system font if registration fails
+	console.error("Error registering fonts:", error);
+	process.exit(1); // Exit if fonts can't be loaded - they're essential
 }
 
 // Make sure the output directories exist
@@ -90,12 +100,12 @@ function generateDefaultImage() {
 	ctx.fillStyle = BG_COLOR;
 	ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-	// Add site name with cursor
-	ctx.font = 'bold 100px "Fira Code", monospace';
+	// Add site name with cursor (similar to hero section)
+	ctx.font = '100px "FiraCode"';
 	ctx.fillStyle = TEXT_COLOR;
 	const siteNameText = "Frontier.sh";
 
-	// Draw the cursor block
+	// Draw the cursor block (like in main.scss .site-title::before)
 	ctx.fillStyle = CURSOR_COLOR;
 	ctx.fillRect(60, 240, 24, 100); // cursor block
 
@@ -104,12 +114,12 @@ function generateDefaultImage() {
 	ctx.fillText(siteNameText, 100, 320);
 
 	// Add ASCII line
-	ctx.font = '36px "Fira Code", monospace';
+	ctx.font = '36px "FiraCode"';
 	ctx.fillStyle = ACCENT_COLOR;
 	ctx.fillText("//////////////////////////////////////////////////", 60, 380);
 
 	// Add site URL at the bottom
-	ctx.font = '24px "Fira Code", monospace';
+	ctx.font = '24px "FiraCode"';
 	ctx.fillStyle = ACCENT_COLOR;
 	ctx.fillText("frontier.sh", 60, HEIGHT - 60);
 
@@ -149,7 +159,7 @@ function generateImage(postPath, slug) {
 		ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
 		// Add site name with cursor (similar to hero section)
-		ctx.font = 'bold 60px "Fira Code", monospace';
+		ctx.font = '60px "FiraCode"';
 		ctx.fillStyle = TEXT_COLOR;
 		const siteNameText = "Frontier.sh";
 
@@ -162,12 +172,12 @@ function generateImage(postPath, slug) {
 		ctx.fillText(siteNameText, 90, 110);
 
 		// Add ASCII line
-		ctx.font = '24px "Fira Code", monospace';
+		ctx.font = '24px "FiraCode"';
 		ctx.fillStyle = ACCENT_COLOR;
 		ctx.fillText("//////////////////////////////////////////////////", 60, 160);
 
 		// Add title
-		ctx.font = 'bold 50px "Fira Code", monospace';
+		ctx.font = '50px "FiraCode"';
 		ctx.fillStyle = TEXT_COLOR;
 
 		const titleLines = wrapText(ctx, title, WIDTH - 120);
@@ -179,7 +189,7 @@ function generateImage(postPath, slug) {
 		});
 
 		// Add site URL at the bottom
-		ctx.font = '24px "Fira Code", monospace';
+		ctx.font = '24px "FiraCode"';
 		ctx.fillStyle = ACCENT_COLOR;
 		ctx.fillText("frontier.sh", 60, HEIGHT - 60);
 
