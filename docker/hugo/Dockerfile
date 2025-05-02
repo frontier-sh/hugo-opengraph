@@ -1,0 +1,1 @@
+FROM jakejarvis/hugo-extended:latest

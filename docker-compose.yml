@@ -1,0 +1,15 @@
+version: '3.8'
+ 
+services:
+  hugo:
+    build:
+      context: ./docker/hugo
+    container_name: hugo
+    ports:
+      - 1313:1313
+    volumes:
+      - .:/src
+    command: server --buildDrafts --buildFuture
+
+volumes:
+  hugo:

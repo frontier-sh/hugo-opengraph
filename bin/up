@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo "Generating OpenGraph images..."
+cd "$(dirname "$0")/../scripts/og-generator"
+./setup.sh
+
+cd ../
+
+docker-compose run --service-ports hugo server -t terminal --buildDrafts --buildFuture --bind 0.0.0.0

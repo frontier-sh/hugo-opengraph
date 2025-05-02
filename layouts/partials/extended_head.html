@@ -1,0 +1,32 @@
+<meta property="og:site_name" content="{{ .Site.Title }}">
+<meta property="og:title" content="{{ .Title }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ .Permalink }}">
+
+{{/* OpenGraph image - only for content pages with .File */}}
+{{ if .File }}
+  {{ $slug := .File.BaseFileName }}
+  {{ $ogImagePath := printf "/og-images/%s.jpg" $slug }}
+  
+  {{/* First check public directory (for local development) */}}
+  {{ if fileExists (printf "public%s" $ogImagePath) }}
+    <meta property="og:image" content="{{ .Site.BaseURL }}{{ $ogImagePath }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+  {{/* Then check static directory */}}
+  {{ else if fileExists (printf "static%s" $ogImagePath) }}
+    <meta property="og:image" content="{{ .Site.BaseURL }}{{ $ogImagePath }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+  {{/* Use default image if specific one not found */}}
+  {{ else }}
+    <meta property="og:image" content="{{ .Site.BaseURL }}/images/default-og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+  {{ end }}
+{{ else }}
+  {{/* Default OpenGraph image for pages without .File (taxonomies, lists, 404, etc.) */}}
+  <meta property="og:image" content="{{ .Site.BaseURL }}/images/default-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+{{ end }}
